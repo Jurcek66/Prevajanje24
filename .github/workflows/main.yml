@@ -1,31 +1,28 @@
 name: Translate README
-
 on:
   push:
     paths:
-      - 'README.md'  # Sproži akcijo ob spremembi README.md
-
+      - 'README.md'  # Trigger the action on changes to README.md
 jobs:
   translate:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install .NET Core SDK
-      uses: actions/setup-dotnet@v3
+    - name: Set up Python
+      uses: actions/setup-python@v4
       with:
-        dotnet-version: '6.0.x'  # Uporabi različico .NET Core, ki ustreza tvojemu prevajalskemu programu
+        python-version: '3.x'  # Use the desired version of Python
 
     - name: Install dependencies
-      run: dotnet restore  # Če tvoj projekt uporablja NuGet pakete, jih bo to obnovilo
-
-    - name: Run translation program
       run: |
-        # Tu lahko prilagodiš klic svojega prevajalskega programa
-        # Predpostavljamo, da imaš C# aplikacijo, ki prevaja README.md
-        dotnet run --project D:/Barbara/Prevedi.exe README.md
+        python -m pip install --upgrade pip
+        pip install googletrans==4.0.0-rc1  # Install the translation library
+
+    - name: Run translation script
+      run: |
+        python translate.py README.md  # Assuming you have a Python script named translate.py
 
     - name: Commit translated files
       run: |
